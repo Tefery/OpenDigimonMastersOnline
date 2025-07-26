@@ -381,6 +381,10 @@ FodyWeavers.xsd
 **/secrets.json
 **/*secrets*.json
 
+# Server Manager and Client Network directories
+serverManager/
+.clientNetwork/
+
 # ==============================================================================
 # ADDITIONAL .NET IGNORES
 # ==============================================================================
