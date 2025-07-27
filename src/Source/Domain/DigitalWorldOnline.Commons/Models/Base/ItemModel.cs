@@ -77,6 +77,7 @@ namespace DigitalWorldOnline.Commons.Models.Base
         public ItemModel(int lastSlot)
         {
             Id = Guid.NewGuid();
+            EndDate = DateTime.Now.AddDays(7); // Initialize with safe default date
 
             Slot = lastSlot + 1;
 
@@ -112,6 +113,7 @@ namespace DigitalWorldOnline.Commons.Models.Base
         {
             Id = Guid.NewGuid();
             FirstExpired = true;
+            EndDate = DateTime.Now.AddDays(7); // Initialize with safe default date
 
             if (AccessoryStatus == null || AccessoryStatus.Count != 8)
             {

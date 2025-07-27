@@ -490,3 +490,4 @@ cache/
 apikeys.json
 tokens.json
 *.ico
+\#ServerManager.exe

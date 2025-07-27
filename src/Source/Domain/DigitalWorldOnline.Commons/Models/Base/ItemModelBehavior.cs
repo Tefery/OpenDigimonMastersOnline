@@ -26,6 +26,7 @@ namespace DigitalWorldOnline.Commons.Models.Base
         {
             ItemId = itemId;
             Amount = amount;
+            EndDate = DateTime.Now.AddDays(7); // Initialize with safe default date
 
             if (Id == Guid.Empty)
                 Id = Guid.NewGuid();
@@ -140,7 +141,26 @@ namespace DigitalWorldOnline.Commons.Models.Base
             if (ItemInfo != null && IsTemporary)
             {
                 Duration = ItemInfo.UsageTimeMinutes;
-                EndDate = DateTime.Now.AddMinutes(ItemInfo.UsageTimeMinutes);
+
+                try
+                {
+                    // Validate that adding minutes won't cause overflow
+                    if (ItemInfo.UsageTimeMinutes > 0 && ItemInfo.UsageTimeMinutes <= int.MaxValue / 60)
+                    {
+                        EndDate = DateTime.Now.AddMinutes(ItemInfo.UsageTimeMinutes);
+                    }
+                    else
+                    {
+                        // For invalid values, use a safe default
+                        EndDate = DateTime.Now.AddDays(7);
+                    }
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    // Fallback to a safe default
+                    EndDate = DateTime.Now.AddDays(7);
+                }
+
                 return true;
             }
 
@@ -163,7 +183,29 @@ namespace DigitalWorldOnline.Commons.Models.Base
                 remainingTime = 0;
 
             Duration = (int)remainingTime;
-            EndDate = DateTime.Now.AddMinutes(remainingTime);
+
+            try
+            {
+                // Validate that adding minutes won't cause overflow
+                if (remainingTime > 0 && remainingTime <= int.MaxValue / 60)
+                {
+                    EndDate = DateTime.Now.AddMinutes(remainingTime);
+                }
+                else if (remainingTime == 0)
+                {
+                    EndDate = DateTime.Now.AddDays(7); // Default 7 days for permanent items
+                }
+                else
+                {
+                    // For extremely large values, cap at 30 days
+                    EndDate = DateTime.Now.AddDays(30);
+                }
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // Fallback to a safe default
+                EndDate = DateTime.Now.AddDays(7);
+            }
         }
 
         /// <summary>
@@ -394,7 +436,26 @@ namespace DigitalWorldOnline.Commons.Models.Base
 
                 m.Write(BitConverter.GetBytes(0), 0, 2);
 
-                long nEndTime = (uint)new DateTimeOffset(EndDate).ToUnixTimeSeconds();
+                long nEndTime = 0;
+                try
+                {
+                    // Validate EndDate before converting to avoid DateTimeOffset exceptions
+                    if (EndDate != DateTime.MinValue && EndDate != DateTime.MaxValue &&
+                        EndDate.Year >= 1 && EndDate.Year <= 9999)
+                    {
+                        nEndTime = (uint)new DateTimeOffset(EndDate).ToUnixTimeSeconds();
+                    }
+                    else
+                    {
+                        // Use a safe default date (current time + 7 days) for invalid dates
+                        nEndTime = (uint)new DateTimeOffset(DateTime.Now.AddDays(7)).ToUnixTimeSeconds();
+                    }
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    // Fallback to a safe default date if conversion fails
+                    nEndTime = (uint)new DateTimeOffset(DateTime.Now.AddDays(7)).ToUnixTimeSeconds();
+                }
 
                 m.Write(BitConverter.GetBytes(nEndTime), 0, 4);
 
