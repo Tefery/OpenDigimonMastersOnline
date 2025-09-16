@@ -18,25 +18,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalWorldOnline.Account", "src\Source\Distribution\DigitalWorldOnline.Account.Host\DigitalWorldOnline.Account.csproj", "{DD97F5BA-6338-497B-96F6-2E566813FFB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODMO.Account", "src\Source\Distribution\ODMO.Account.Host\ODMO.Account.csproj", "{DD97F5BA-6338-497B-96F6-2E566813FFB7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalWorldOnline.Character", "src\Source\Distribution\DigitalWorldOnline.Character.Host\DigitalWorldOnline.Character.csproj", "{68BA0057-DD99-492B-95DA-10F670FFBD2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODMO.Character", "src\Source\Distribution\ODMO.Character.Host\ODMO.Character.csproj", "{68BA0057-DD99-492B-95DA-10F670FFBD2E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalWorldOnline.Game", "src\Source\Distribution\DigitalWorldOnline.Game.Host\DigitalWorldOnline.Game.csproj", "{D7E683CB-FC10-4192-B36A-1F5F30894262}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODMO.Game", "src\Source\Distribution\ODMO.Game.Host\ODMO.Game.csproj", "{D7E683CB-FC10-4192-B36A-1F5F30894262}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalWorldOnline.Admin", "src\Source\Distribution\DigitalWorldOnline.Admin\DigitalWorldOnline.Admin.csproj", "{85E0D34F-EB64-4B92-980D-681641F928F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODMO.Admin", "src\Source\Distribution\ODMO.Admin\ODMO.Admin.csproj", "{85E0D34F-EB64-4B92-980D-681641F928F8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalWorldOnline.Commons", "src\Source\Domain\DigitalWorldOnline.Commons\DigitalWorldOnline.Commons.csproj", "{8B835F7D-C610-44D7-9EEC-F06E1CCA72E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODMO.Commons", "src\Source\Domain\ODMO.Commons\ODMO.Commons.csproj", "{8B835F7D-C610-44D7-9EEC-F06E1CCA72E3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalWorldOnline.Infrastructure", "src\Source\Infra\DigitalWorldOnline.Infrastructure\DigitalWorldOnline.Infrastructure.csproj", "{B9FD08C7-54CF-468E-8D8E-360C7E30A6EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODMO.Infrastructure", "src\Source\Infra\ODMO.Infrastructure\ODMO.Infrastructure.csproj", "{B9FD08C7-54CF-468E-8D8E-360C7E30A6EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalWorldOnline.Application", "src\Source\Application\DigitalWorldOnline.Application\DigitalWorldOnline.Application.csproj", "{48E43EC3-4EDB-4109-843A-A4FCF9DD1F47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODMO.Application", "src\Source\Application\ODMO.Application\ODMO.Application.csproj", "{48E43EC3-4EDB-4109-843A-A4FCF9DD1F47}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalWorldOnline.Routine", "src\Source\Distribution\DigitalWorldOnline.Routine.Host\DigitalWorldOnline.Routine\DigitalWorldOnline.Routine.csproj", "{8DC7F660-D9C5-4C65-A0CF-F912F9CD79DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODMO.Routine", "src\Source\Distribution\ODMO.Routine.Host\ODMO.Routine.csproj", "{8DC7F660-D9C5-4C65-A0CF-F912F9CD79DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalWorldOnline.Api", "src\Source\Distribution\DigitalWorldOnline.Account.Api\DigitalWorldOnline.Api.csproj", "{66A1FBFC-3418-467E-86AD-FE6F275E6BB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODMO.Api", "src\Source\Distribution\ODMO.Account.Api\ODMO.Api.csproj", "{66A1FBFC-3418-467E-86AD-FE6F275E6BB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalWorldOnline.Gateway", "src\Source\Distribution\DigitalWorldOnline.Gateway\DigitalWorldOnline.Gateway.csproj", "{4FC29D7F-770B-48AA-A3ED-635FE1ABECB1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ODMO.Gateway", "src\Source\Distribution\ODMO.Gateway\ODMO.Gateway.csproj", "{4FC29D7F-770B-48AA-A3ED-635FE1ABECB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

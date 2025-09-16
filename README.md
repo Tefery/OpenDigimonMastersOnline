@@ -103,7 +103,7 @@ The database will be automatically created and migrated when you start the Authe
 
 ```powershell
 # Navigate to any project with DatabaseContext
-cd "src\Source\Distribution\DigitalWorldOnline.Account.Host"
+cd "src\Source\Distribution\ODMO.Account.Host"
 
 # Run migrations
 dotnet ef database update
@@ -198,11 +198,11 @@ CHARACTER_SERVER_PORT=7608
 OpenDigimonMastersOnline/
 ├── src/Source/
 │   ├── Distribution/          # Server applications
-│   │   ├── DigitalWorldOnline.Account.Host/
-│   │   ├── DigitalWorldOnline.Character.Host/
-│   │   ├── DigitalWorldOnline.Game.Host/
-│   │   ├── DigitalWorldOnline.Admin/
-│   │   └── DigitalWorldOnline.Gateway/
+│   │   ├── ODMO.Account.Host/
+│   │   ├── ODMO.Character.Host/
+│   │   ├── ODMO.Game.Host/
+│   │   ├── ODMO.Admin/
+│   │   └── ODMO.Gateway/
 │   ├── Application/           # Business logic layer
 │   ├── Domain/               # Core domain models
 │   └── Infra/               # Infrastructure layer
