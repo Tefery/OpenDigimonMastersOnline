@@ -1,4 +1,4 @@
-# Open Digimon Masters Online Manager
+# OpenDigimonMastersServer Manager
 # PowerShell script with clean interface and proper environment variable handling
 
 param(
@@ -7,7 +7,7 @@ param(
 
 # Set console encoding to UTF-8 for proper emoji display
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-$Host.UI.RawUI.WindowTitle = "Open Digimon Masters Online Manager"
+$Host.UI.RawUI.WindowTitle = "OpenDigimonMastersServer Manager"
 
 # Global variables for server processes
 $global:ServerProcesses = @{}
@@ -15,7 +15,7 @@ $global:ServerProcesses = @{}
 function Write-Header {
     Clear-Host
     Write-Host "========================================" -ForegroundColor Cyan
-    Write-Host "   Open Digimon Masters Online Manager" -ForegroundColor Cyan
+    Write-Host "   OpenDigimonMastersServer Manager" -ForegroundColor Cyan
     Write-Host "========================================" -ForegroundColor Cyan
     Write-Host ""
 }
@@ -23,14 +23,13 @@ function Write-Header {
 function Load-EnvironmentVariables {
     Write-Host "Loading environment variables from .env file..." -ForegroundColor Yellow
     
-    $envFile = ".env"
-    if (-not (Test-Path $envFile)) {
-        Write-Host "❌ ERROR: .env file not found!" -ForegroundColor Red
+    if (-not (Test-Path ".env")) {
+        Write-Host "ERROR: .env file not found!" -ForegroundColor Red
         Write-Host "Please copy .env.example to .env and configure your settings" -ForegroundColor Yellow
         return $false
     }
     
-    $envContent = Get-Content $envFile -Encoding UTF8
+    $envContent = Get-Content ".env" -Encoding UTF8
     $variablesLoaded = 0
     
     foreach ($line in $envContent) {
@@ -45,9 +44,9 @@ function Load-EnvironmentVariables {
                     $value = $value.Substring(1, $value.Length - 2)
                 }
                 
-                [Environment]::SetEnvironmentVariable($name, $value, [EnvironmentVariableTarget]::Process)
+                [Environment]::SetEnvironmentVariable($name, $value, "Process")
+                Write-Host "  Loaded: $name" -ForegroundColor Gray
                 $variablesLoaded++
-                Write-Host "  Loaded: $name" -ForegroundColor Green
             }
         }
     }
@@ -55,12 +54,12 @@ function Load-EnvironmentVariables {
     Write-Host "Environment variables loaded successfully! ($variablesLoaded variables)" -ForegroundColor Green
     
     # Verify critical variables
-    $dbConnection = [Environment]::GetEnvironmentVariable("ODMO_CONNECTION_STRING")
+    $dbConnection = [Environment]::GetEnvironmentVariable("DMOX_CONNECTION_STRING")
     if ($dbConnection) {
         $maskedConnection = $dbConnection -replace "Password=[^;]*", "Password=***"
         Write-Host "Database: $($maskedConnection.Substring(0, [Math]::Min(50, $maskedConnection.Length)))..." -ForegroundColor Cyan
     } else {
-        Write-Host "WARNING: ODMO_CONNECTION_STRING not found in .env file!" -ForegroundColor Yellow
+        Write-Host "WARNING: DMOX_CONNECTION_STRING not found in .env file!" -ForegroundColor Yellow
         return $false
     }
     
@@ -71,31 +70,31 @@ function Load-EnvironmentVariables {
 function Get-ServerConfig {
     return @{
         "Authentication" = @{
-            Path = "src\Source\Distribution\ODMO.Account.Host\bin\Release\net8.0\ODMO.Account.exe"
+            Path = "src\Source\Distribution\DigitalWorldOnline.Account.Host\bin\Release\net8.0\DigitalWorldOnline.Account.exe"
             Name = "Authentication Server"
             Icon = "🔐"
             Port = "7029"
         }
         "Character" = @{
-            Path = "src\Source\Distribution\ODMO.Character.Host\bin\Release\net8.0\ODMO.Character.exe"
+            Path = "src\Source\Distribution\DigitalWorldOnline.Character.Host\bin\Release\net8.0\DigitalWorldOnline.Character.exe"
             Name = "Character Server"
             Icon = "👤"
             Port = "7050"
         }
         "Game" = @{
-            Path = "src\Source\Distribution\ODMO.Game.Host\bin\Release\net8.0\ODMO.Game.exe"
+            Path = "src\Source\Distribution\DigitalWorldOnline.Game.Host\bin\Release\net8.0\DigitalWorldOnline.Game.exe"
             Name = "Game Server"
             Icon = "🎮"
             Port = "7607"
         }
         "Routine" = @{
-            Path = "src\Source\Distribution\ODMO.Routine.Host\bin\Release\net8.0\ODMO.Routine.exe"
+            Path = "src\Source\Distribution\DigitalWorldOnline.Routine.Host\DigitalWorldOnline.Routine\bin\Release\net8.0\DigitalWorldOnline.Routine.exe"
             Name = "Routine Server"
             Icon = "⚙️"
             Port = "Background"
         }
         "WebServer" = @{
-            Path = "src\Source\Distribution\ODMO.Admin\bin\Release\net8.0\ODMO.Admin.exe"
+            Path = "src\Source\Distribution\DigitalWorldOnline.Admin\bin\Release\net8.0\DigitalWorldOnline.Admin.exe"
             Name = "WebServer/Admin"
             Icon = "🌐"
             Port = "41001/5002"
@@ -117,18 +116,19 @@ function Start-Server {
     }
     
     try {
+        # Get the directory of the executable
         $serverDir = Split-Path $Config.Path -Parent
         
+        # Start the server process
         $processInfo = New-Object System.Diagnostics.ProcessStartInfo
         $processInfo.FileName = $Config.Path
         $processInfo.WorkingDirectory = $serverDir
         $processInfo.UseShellExecute = $false
         $processInfo.CreateNoWindow = $false
         $processInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Normal
-        
-        # Add environment variables
-        $envVars = [Environment]::GetEnvironmentVariables([EnvironmentVariableTarget]::Process)
-        foreach ($envVar in $envVars.GetEnumerator()) {
+
+        # Copy environment variables to the process
+        foreach ($envVar in [Environment]::GetEnvironmentVariables("Process").GetEnumerator()) {
             $processInfo.EnvironmentVariables[$envVar.Key] = $envVar.Value
         }
         
@@ -169,33 +169,34 @@ function Get-ServerStatus {
     foreach ($serverType in $servers.Keys) {
         $config = $servers[$serverType]
         $status = "Stopped"
+        $color = "Red"
         
         if ($global:ServerProcesses.ContainsKey($serverType)) {
             $process = $global:ServerProcesses[$serverType]
             if (-not $process.HasExited) {
                 $status = "Running (PID: $($process.Id))"
+                $color = "Green"
             } else {
                 $global:ServerProcesses.Remove($serverType)
-                $status = "Stopped"
             }
         }
         
-        $statusColor = if ($status.StartsWith("Running")) { "Green" } else { "Red" }
         Write-Host "$($config.Icon) $($config.Name): " -NoNewline -ForegroundColor White
-        Write-Host $status -ForegroundColor $statusColor
+        Write-Host $status -ForegroundColor $color
     }
+    
+    Write-Host ""
 }
 
 function Show-Menu {
+    Write-Header
+    
+    if (-not (Load-EnvironmentVariables)) {
+        Read-Host "Press Enter to exit"
+        return
+    }
+    
     do {
-        Write-Header
-        
-        if (-not (Load-EnvironmentVariables)) {
-            Write-Host "Cannot continue without proper environment configuration." -ForegroundColor Red
-            Read-Host "Press Enter to exit"
-            return
-        }
-        
         Write-Host "Choose an option:" -ForegroundColor Yellow
         Write-Host "1. Start All Servers" -ForegroundColor White
         Write-Host "2. Start Individual Server" -ForegroundColor White
@@ -207,7 +208,6 @@ function Show-Menu {
         Write-Host ""
         
         Get-ServerStatus
-        Write-Host ""
         
         $choice = Read-Host "Enter your choice (0-6)"
         
@@ -236,16 +236,16 @@ function Show-Menu {
 function Start-AllServers {
     Write-Host "Starting all servers..." -ForegroundColor Cyan
     Write-Host ""
-
+    
     $servers = Get-ServerConfig
     $startedCount = 0
-
+    
     foreach ($serverType in $servers.Keys) {
         if (Start-Server -ServerType $serverType -Config $servers[$serverType]) {
             $startedCount++
         }
     }
-
+    
     Write-Host ""
     Write-Host "Started $startedCount out of $($servers.Count) servers." -ForegroundColor Cyan
     Read-Host "Press Enter to continue"
@@ -253,20 +253,20 @@ function Start-AllServers {
 
 function Start-IndividualServer {
     $servers = Get-ServerConfig
-
+    
     Write-Host "Choose server to start:" -ForegroundColor Yellow
     $i = 1
     $serverList = @()
-
+    
     foreach ($serverType in $servers.Keys) {
         $config = $servers[$serverType]
         Write-Host "$i. $($config.Icon) $($config.Name)" -ForegroundColor White
         $serverList += $serverType
         $i++
     }
-
+    
     $choice = Read-Host "Enter server number (1-$($servers.Count))"
-
+    
     try {
         $index = [int]$choice - 1
         if ($index -ge 0 -and $index -lt $serverList.Count) {
@@ -279,18 +279,18 @@ function Start-IndividualServer {
     catch {
         Write-Host "Invalid input!" -ForegroundColor Red
     }
-
+    
     Read-Host "Press Enter to continue"
 }
 
 function Stop-AllServers {
     Write-Host "Stopping all servers..." -ForegroundColor Yellow
-
+    
     $serverTypes = @($global:ServerProcesses.Keys)
     foreach ($serverType in $serverTypes) {
         Stop-Server -ServerType $serverType
     }
-
+    
     if ($serverTypes.Count -eq 0) {
         Write-Host "No servers are currently running." -ForegroundColor Gray
     }
@@ -302,25 +302,25 @@ function Stop-IndividualServer {
         Read-Host "Press Enter to continue"
         return
     }
-
+    
     Write-Host "Choose server to stop:" -ForegroundColor Yellow
     $i = 1
-    $serverList = @()
-
+    $runningServers = @()
+    
     foreach ($serverType in $global:ServerProcesses.Keys) {
         $servers = Get-ServerConfig
         $config = $servers[$serverType]
         Write-Host "$i. $($config.Icon) $($config.Name)" -ForegroundColor White
-        $serverList += $serverType
+        $runningServers += $serverType
         $i++
     }
-
-    $choice = Read-Host "Enter server number (1-$($serverList.Count))"
-
+    
+    $choice = Read-Host "Enter server number (1-$($runningServers.Count))"
+    
     try {
         $index = [int]$choice - 1
-        if ($index -ge 0 -and $index -lt $serverList.Count) {
-            $serverType = $serverList[$index]
+        if ($index -ge 0 -and $index -lt $runningServers.Count) {
+            $serverType = $runningServers[$index]
             Stop-Server -ServerType $serverType
         } else {
             Write-Host "Invalid choice!" -ForegroundColor Red
@@ -329,7 +329,7 @@ function Stop-IndividualServer {
     catch {
         Write-Host "Invalid input!" -ForegroundColor Red
     }
-
+    
     Read-Host "Press Enter to continue"
 }
 
@@ -337,5 +337,6 @@ function Stop-IndividualServer {
 if ($Action -eq "menu") {
     Show-Menu
 } else {
-    Write-Host "Invalid action. Use 'menu' or run without parameters." -ForegroundColor Red
+    Write-Host "OpenDigimonMastersServer Manager" -ForegroundColor Cyan
+    Write-Host "Usage: .\ServerManager.ps1" -ForegroundColor White
 }

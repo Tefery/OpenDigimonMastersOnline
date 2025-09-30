@@ -8,7 +8,7 @@ param(
 )
 
 if ($Help) {
-    Write-Host "Open Digimon Masters Online - WebServer/Admin Launcher" -ForegroundColor Cyan
+    Write-Host "OpenDigimonMastersServer - WebServer/Admin Launcher" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "Usage: .\StartWebServer.ps1 [options]"
     Write-Host ""
@@ -77,7 +77,7 @@ try {
 Write-Host ""
 Write-Host "🔍 Validating configuration..." -ForegroundColor Yellow
 
-$requiredVars = @("ODMO_CONNECTION_STRING")
+$requiredVars = @("DMOX_CONNECTION_STRING")
 $missingVars = @()
 
 foreach ($var in $requiredVars) {
@@ -106,8 +106,8 @@ if ($missingVars.Count -gt 0) {
 }
 
 # Define server paths
-$serverPath = "src\Source\Distribution\ODMO.Admin\bin\Release\net8.0\ODMO.Admin.exe"
-$fallbackPath = "src\Source\Distribution\ODMO.Admin\bin\Debug\net8.0\ODMO.Admin.exe"
+$serverPath = "src\Source\Distribution\DigitalWorldOnline.Admin\bin\Release\net8.0\DigitalWorldOnline.Admin.exe"
+$fallbackPath = "src\Source\Distribution\DigitalWorldOnline.Admin\bin\Debug\net8.0\DigitalWorldOnline.Admin.exe"
 
 # Check if server executable exists
 if (Test-Path $serverPath) {
@@ -120,7 +120,7 @@ if (Test-Path $serverPath) {
 } else {
     Write-Host "❌ Error: WebServer/Admin executable not found!" -ForegroundColor Red
     Write-Host "💡 Please build the solution first:" -ForegroundColor Yellow
-    Write-Host "   dotnet build OpenDigimonMastersOnline.sln --configuration Release" -ForegroundColor Gray
+    Write-Host "   dotnet build DigitalWorldOnline.sln --configuration Release" -ForegroundColor Gray
     Write-Host ""
     if (-not $NoWait) {
         Write-Host "Press any key to exit..." -ForegroundColor Gray

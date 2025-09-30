@@ -1,10 +1,10 @@
-# Simple PowerShell script to start all Open Digimon Masters Online instances
+# Simple PowerShell script to start all OpenDigimonMastersServer instances
 # Reads configuration from .env file and manages server processes cleanly
 
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "   Open Digimon Masters Online Launcher" -ForegroundColor Cyan
+Write-Host "   OpenDigimonMastersServer Launcher" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -43,12 +43,12 @@ foreach ($line in $envContent) {
 Write-Host "✅ Environment variables loaded successfully! ($variablesLoaded variables)" -ForegroundColor Green
 
 # Verify database connection string
-$dbConnection = [Environment]::GetEnvironmentVariable("ODMO_CONNECTION_STRING")
+$dbConnection = [Environment]::GetEnvironmentVariable("DMOX_CONNECTION_STRING")
 if ($dbConnection) {
     $maskedConnection = $dbConnection -replace "Password=[^;]*", "Password=***"
     Write-Host "🗄️ Database: $($maskedConnection.Substring(0, [Math]::Min(50, $maskedConnection.Length)))..." -ForegroundColor Cyan
 } else {
-    Write-Host "❌ WARNING: ODMO_CONNECTION_STRING not found in .env file!" -ForegroundColor Yellow
+    Write-Host "❌ WARNING: DMOX_CONNECTION_STRING not found in .env file!" -ForegroundColor Yellow
 }
 
 Write-Host ""
@@ -57,33 +57,33 @@ Write-Host ""
 $servers = @(
     @{
         Name = "Authentication Server"
-        Path = "src\Source\Distribution\ODMO.Account.Host\bin\Release\net8.0\ODMO.Account.exe"
+        Path = "src\Source\Distribution\DigitalWorldOnline.Account.Host\bin\Release\net8.0\DigitalWorldOnline.Account.exe"
         Icon = "🔐"
-        WindowTitle = "ODMO - Authentication Server"
+        WindowTitle = "UDMO - Authentication Server"
     },
     @{
         Name = "Character Server"
-        Path = "src\Source\Distribution\ODMO.Character.Host\bin\Release\net8.0\ODMO.Character.exe"
+        Path = "src\Source\Distribution\DigitalWorldOnline.Character.Host\bin\Release\net8.0\DigitalWorldOnline.Character.exe"
         Icon = "👤"
-        WindowTitle = "ODMO - Character Server"
+        WindowTitle = "UDMO - Character Server"
     },
     @{
         Name = "Game Server"
-        Path = "src\Source\Distribution\ODMO.Game.Host\bin\Release\net8.0\ODMO.Game.exe"
+        Path = "src\Source\Distribution\DigitalWorldOnline.Game.Host\bin\Release\net8.0\DigitalWorldOnline.Game.exe"
         Icon = "🎮"
-        WindowTitle = "ODMO - Game Server"
+        WindowTitle = "UDMO - Game Server"
     },
     @{
         Name = "Routine Server"
-        Path = "src\Source\Distribution\ODMO.Routine.Host\bin\Release\net8.0\ODMO.Routine.exe"
+        Path = "src\Source\Distribution\DigitalWorldOnline.Routine.Host\DigitalWorldOnline.Routine\bin\Release\net8.0\DigitalWorldOnline.Routine.exe"
         Icon = "⚙️"
-        WindowTitle = "ODMO - Routine Server"
+        WindowTitle = "UDMO - Routine Server"
     },
     @{
         Name = "WebServer/Admin"
-        Path = "src\Source\Distribution\ODMO.Admin\bin\Release\net8.0\ODMO.Admin.exe"
+        Path = "src\Source\Distribution\DigitalWorldOnline.Admin\bin\Release\net8.0\DigitalWorldOnline.Admin.exe"
         Icon = "🌐"
-        WindowTitle = "ODMO - WebServer/Admin"
+        WindowTitle = "UDMO - WebServer/Admin"
     }
 )
 
